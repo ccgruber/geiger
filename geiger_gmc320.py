@@ -11,12 +11,36 @@ import serial
 
 
 """
-geiger.py
-using serial communication
-device command coding taken from:  https://sourceforge.net/projects/gqgmc/
-and document GQ-RFC1201.txt (GQ-RFC1201, GQ Geiger Counter Communication Protocol, Ver 1.40    Jan-2015)
+****************
+geiger_gmc320.py
+****************
 
+Python script for communication with GQ GMC-320+ from GQ Electronics LLC
+(https://www.gqelectronicsllc.com/comersus/store/comersus_viewItem.asp?idProduct=4579)
 
+Features:
+
+* Uses serial communication (via USB)
+* Reads firmware information from geiger counter (model, serial number, ...)
+* Reads temperature and voltage
+* Reads CPM and converts to nSv/h (nSv/h = CPM * 6.5, see https://www.gqelectronicsllc.com/forum/topic.asp?TOPIC_ID=4226&SearchTerms=conversio)
+* Prints continouse data to terminal
+* Stores data in json format to text file (json_data_log = True)
+* Stores data to dummy device in FHEM server (fhem_data_log = True)
+
+ToDo:
+
+* Command line paramters
+* Handling of serial connection problems
+* Set date and time of geiger counter on start
+* Create FHEM device only if not present
+* Implement WiFi connection
+* Daemon mode
+* Test with Python 3
+
+Based on:
+
+Protocol description http://www.gqelectronicsllc.com/download/GQ-RFC1201.txt
 FHEM python api from https://github.com/domschl/python-fhem
 geiger_basic.py from ftp://197.155.77.5/sourceforge/g/project/project/ge/geigerlog/old%20files/geiger_basic.py
 
@@ -52,7 +76,7 @@ geiger_basic.py from ftp://197.155.77.5/sourceforge/g/project/project/ge/geigerl
 
 __author__      = "Christian C. Gruber"
 __copyright__   = "Copyright 2017"
-__credits__     = ["Christian C. Gruber"]
+__credits__     = "Christian C. Gruber"
 __license__     = "GPL"
 __version__     = "0.1"
 __maintainer__  = ""
@@ -120,9 +144,9 @@ def getDATETIME(ser):
     ser.write(b'<GETDATETIME>>')
     dt = ser.read(7)
     idt = []
-    for i in range(0,6):            # don't need last byte 0xAA
-        idt.append( ord(dt[i]))     # convert char to int
-    idt[0] += 2000                  # to convert year from yy to yyyy
+    for i in range(0,6):
+        idt.append( ord(dt[i]))
+    idt[0] += 2000
     return datetime.datetime(idt[0], idt[1], idt[2], idt[3],idt[4],idt[5])
 
 def getTEMP(ser):
