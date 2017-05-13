@@ -23,10 +23,10 @@ Features:
 * Uses serial communication (via USB)
 * Reads firmware information from geiger counter (model, serial number, ...)
 * Reads temperature and voltage
-* Reads CPM and converts to nSv/h (nSv/h = CPM * 6.5, see https://www.gqelectronicsllc.com/forum/topic.asp?TOPIC_ID=4226&SearchTerms=conversio)
+* Reads CPM and converts to nSv/h (Estimated as nSv/h = CPM * 6.5, see https://www.gqelectronicsllc.com/forum/topic.asp?TOPIC_ID=4226&SearchTerms=conversio)
 * Prints continouse data to terminal
-* Stores data in json format to text file (json_data_log = True)
-* Stores data to dummy device in FHEM server (fhem_data_log = True)
+* Stores data in json format to text file (if json_data_log = True)
+* Stores data to dummy device in FHEM server (if fhem_data_log = True)
 
 ToDo:
 
@@ -34,8 +34,10 @@ ToDo:
 * Handling of serial connection problems
 * Set date and time of geiger counter on start
 * Create FHEM device only if not present
+* Save to SQL database
 * Implement WiFi connection
 * Daemon mode
+* Check Weatherunderground if protocol contains reading for radiation
 * Test with Python 3
 
 Based on:
